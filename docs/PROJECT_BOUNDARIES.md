@@ -1,23 +1,42 @@
-## Project Scope and Ownership
+# Project scope and ownership
 
-RootTrail AI is an independent personal AI engineering learning and portfolio project, developed as part of a 45-day curriculum from October 17 to November 30, 2026.
+RootTrail AI is an independent personal Python and AI engineering learning
+project. Development is paused at an early Python prototype stage after the
+author shifted focus to BizBrain AI.
 
-### MVP Scope
+## Current scope
 
-The initial application will investigate incidents involving fictional operational systems using approved read-only integrations. It will use specialized AI agents to gather evidence, verify findings, and produce structured investigation reports.
+The repository contains Python exercises that summarize synthetic incidents and
+orders, a small environment-check script, and pytest tests. It uses in-memory
+lists and dictionaries. It does not contain AI agents, model calls, retrieval,
+external integrations, databases, a web API, or a deployed application.
 
-The MVP will demonstrate two fictional organizations, isolated data, multi-agent orchestration, retrieval-augmented generation, automated evaluation, and a deployable application.
+## Original vision — planned, not implemented
 
-### Ownership and Data Boundaries
+The original 45-day curriculum envisioned investigating incidents in fictional
+operational systems using approved read-only integrations. Planned capabilities
+included specialized AI agents, evidence verification, structured investigation
+reports, two fictional organizations with isolated data, retrieval-augmented
+generation, automated evaluation, and a deployable application.
 
-- All project code, test data, fictional company records, and documentation will be independently created.
-- No external source code, proprietary requirements, internal documentation, API schemas, credentials, infrastructure, or customer information will be used.
-- No company-funded AI services or private infrastructure will be used without explicit authorization.
-- The personal GitHub repository will remain private until employment, intellectual-property, and publication restrictions have been reviewed.
-- Any future real-company integration will require separate authorization.
+These ideas remain historical learning goals, not delivered features or an active
+roadmap. The original October 17–November 30, 2026 schedule is no longer an active
+commitment.
 
-### Out of Scope for the 45-Day MVP
+## Independence and data boundaries
 
-Unrestricted third-party integrations, universal incident detection, fully automated remediation, enterprise-scale production operations, Kubernetes, and model fine-tuning.
+- This is a personal learning project, independent of employer or client work.
+- The incident and order fixtures are synthetic; they do not represent real
+  companies, customers, or operational incidents.
+- Employer/client source code, proprietary requirements, internal documentation,
+  private API schemas, credentials, and customer data must not be added.
+- Company-funded services or private infrastructure require explicit authorization.
+- Any future real-company integration requires separate authorization.
+- Publication must respect applicable ownership and employment restrictions.
+  A repository audit alone does not establish clearance under those restrictions.
 
-The goal is a reliable, demonstrable AI engineering portfolio project with verified capabilities, not an untested claim of enterprise readiness.
+## Out of scope
+
+Expanding this paused prototype into a full AI platform, unrestricted integrations,
+automated remediation, enterprise production operations, Kubernetes, and model
+fine-tuning are outside this repository's current scope.

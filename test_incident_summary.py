@@ -1,69 +1,54 @@
-from incident_summary import summarize_incidents
+"""Tests for incident aggregation and input preservation."""
 
-#original check
-incidents = [
-    {"id": "INC-001", "severity": "high", "resolved": False},
-    {"id": "INC-002", "severity": "low", "resolved": True},
-    {"id": "INC-003", "severity": "medium", "resolved": False},
-    {"id": "INC-004", "severity": "high", "resolved": True},
-    {"id": "INC-005", "severity": "high", "resolved": False},
-]
+from copy import deepcopy
 
-# An empty list returns zero totals and an empty ID list
+import pytest
 
-incidents_test_empty = []
-
-# A list containing only resolved incidents returns zero unresolved incidents.
-
-incidents_test_all_resolved = [
-    {"id": "INC-001", "severity": "high", "resolved": True},
-    {"id": "INC-002", "severity": "low", "resolved": True},
-    {"id": "INC-003", "severity": "medium", "resolved": True},
-    {"id": "INC-004", "severity": "high", "resolved": True},
-    {"id": "INC-005", "severity": "high", "resolved": True},
-]
-
-# A list containing high-severity incidents includes only unresolved high-severity IDs,
-# in their original order.
-
-incidents_test_high_severity_unresolved = [
-    {"id": "INC-001", "severity": "high", "resolved": False},
-    {"id": "INC-002", "severity": "high", "resolved": False},
-    {"id": "INC-003", "severity": "high", "resolved": False},
-    {"id": "INC-004", "severity": "high", "resolved": False},
-    {"id": "INC-005", "severity": "high", "resolved": False},
-]
-
-incidents_test_empty_result = summarize_incidents(incidents_test_empty)
+from incident_summary import incidents, summarize_incidents
 
 
-assert incidents_test_empty_result["total"] == 0
-assert incidents_test_empty_result["resolved"] == 0
-assert incidents_test_empty_result["unresolved"] == 0
-assert incidents_test_empty_result["high_unresolved_ids"] == []
+@pytest.mark.parametrize(
+    ("records", "expected"),
+    [
+        ([], {"total": 0, "resolved": 0, "unresolved": 0, "high_unresolved_ids": []}),
+        (
+            incidents,
+            {"total": 5, "resolved": 2, "unresolved": 3,
+             "high_unresolved_ids": ["INC-001", "INC-005"]},
+        ),
+        (
+            [{**incident, "resolved": True} for incident in incidents],
+            {"total": 5, "resolved": 5, "unresolved": 0, "high_unresolved_ids": []},
+        ),
+        (
+            [{**incident, "severity": "high", "resolved": False}
+             for incident in incidents],
+            {"total": 5, "resolved": 0, "unresolved": 5,
+             "high_unresolved_ids": [incident["id"] for incident in incidents]},
+        ),
+        (
+            [{"id": "INC-006", "severity": "low", "resolved": False}],
+            {"total": 1, "resolved": 0, "unresolved": 1, "high_unresolved_ids": []},
+        ),
+    ],
+    ids=["empty", "mixed", "all-resolved", "all-high-unresolved", "low-unresolved"],
+)
+def test_summarize_incidents(records, expected):
+    assert summarize_incidents(records) == expected
 
-incidents_test_all_resolved_result = summarize_incidents(incidents_test_all_resolved)
 
-assert incidents_test_all_resolved_result["total"] == 5
-assert incidents_test_all_resolved_result["resolved"] == 5
-assert incidents_test_all_resolved_result["unresolved"] == 0
-assert incidents_test_all_resolved_result["high_unresolved_ids"] == []
+def test_high_unresolved_ids_preserve_input_order():
+    records = [
+        {"id": "INC-009", "severity": "high", "resolved": False},
+        {"id": "INC-002", "severity": "high", "resolved": True},
+        {"id": "INC-001", "severity": "high", "resolved": False},
+    ]
+    assert summarize_incidents(records)["high_unresolved_ids"] == ["INC-009", "INC-001"]
 
-incidents_test_high_severity_unresolved_result = summarize_incidents(incidents_test_high_severity_unresolved)
 
-assert incidents_test_high_severity_unresolved_result["total"] == 5
-assert incidents_test_high_severity_unresolved_result["resolved"] == 0
-assert incidents_test_high_severity_unresolved_result["unresolved"] == 5
-assert incidents_test_high_severity_unresolved_result["high_unresolved_ids"] == [
-    "INC-001",
-    "INC-002",
-    "INC-003",
-    "INC-004",
-    "INC-005",
-]
-
-original_values_result = summarize_incidents(incidents)
-
-assert original_values_result["resolved"] == 2
-assert original_values_result["unresolved"] == 3
-assert original_values_result["high_unresolved_ids"] == ["INC-001", "INC-005"]
+def test_summarize_incidents_does_not_mutate_input():
+    records = deepcopy(incidents)
+    before = deepcopy(records)
+    summary = summarize_incidents(records)
+    summary["high_unresolved_ids"].append("INC-NEW")
+    assert records == before

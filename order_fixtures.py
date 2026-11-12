@@ -1,8 +1,10 @@
+"""Synthetic order examples for practicing nested dictionaries and lists."""
+
 ORDER_NS_1042 = {
     "order_id": "NS-1042",
     "status": "delayed",
     "items": [
-        {"sku": "LAPTOP-01", "quantity": 2}, 
+        {"sku": "LAPTOP-01", "quantity": 2},
         {"sku": "MOUSE-01", "quantity": 1},
     ],
     "events": [
@@ -15,7 +17,7 @@ ORDER_NS_1042_REVERSED = {
     "order_id": "NS-1042",
     "status": "delayed",
     "items": [
-        {"sku": "LAPTOP-01", "quantity": 2}, 
+        {"sku": "LAPTOP-01", "quantity": 2},
         {"sku": "MOUSE-01", "quantity": 1},
     ],
     "events": [
@@ -25,12 +27,14 @@ ORDER_NS_1042_REVERSED = {
 }
 
 
-def count_units(order):
+def count_units(order: dict) -> int:
+    """Sum integer item quantities; an empty items list contains zero units."""
     total_quantity_count = 0
     for item in order["items"]:
         total_quantity_count += item["quantity"]
 
     return total_quantity_count
 
-if __name__ == "__main__": 
+
+if __name__ == "__main__":
     print(count_units(ORDER_NS_1042))
